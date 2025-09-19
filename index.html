@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Rock Paper Scissors</h1>
+    <div id="difficulty-selector">
+        <label for="difficulty">Select Difficulty:</label>
+        <select id="difficulty" onchange="setDifficulty()">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+    </div>
+    <div class="buttons">
+        <button onclick="playGame('rock')">Rock</button>
+        <button onclick="playGame('paper')">Paper</button>
+        <button onclick="playGame('scissors')">Scissors</button>
+    </div>
+    <div id="results">
+        <p id="player-choice">Player Choice: </p>
+        <p id="computer-choice">Computer Choice: </p>
+        <p id="game-result">Result: </p>
+        <p id="lives">Lives Remaining: 3</p> <!-- New lives display -->
+    </div>
+</body>
+</html>

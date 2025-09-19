@@ -1,0 +1,177 @@
+body {
+    text-align: center;
+    font-family: 'Press Start 2P', cursive; /* Retro pixel font */
+    background: #000; /* Fallback background */
+    background-image: repeating-linear-gradient(
+        90deg,
+        #000 0%,
+        #111 20%,
+        #333 40%,
+        #555 60%,
+        #111 80%,
+        #000 100%
+    );
+    background-size: 10px 10px; /* Pixelated effect */
+    color: #00FF00; /* Bright green text */
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #FF00FF; /* Bright magenta for the title */
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px #000; /* Shadow for depth */
+}
+
+.buttons {
+    margin: 20px 0;
+}
+
+button {
+    font-size: 16px;
+    margin: 10px;
+    padding: 15px 30px;
+    cursor: pointer;
+    background-color: #333; /* Dark gray button background */
+    color: #00FF00; /* Bright green text */
+    border: 2px solid #00FF00; /* Green border */
+    border-radius: 0; /* No rounded corners for retro look */
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #00FF00; /* Bright green hover */
+    color: #000; /* Black text on hover */
+}
+
+#results {
+    margin-top: 30px;
+    border: 2px solid #00FF00; /* Green border around results */
+    padding: 20px;
+    display: inline-block;
+    background-color: #111; /* Darker background for results */
+}
+
+#results p {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #00FF00; /* Bright green text */
+}
+
+/* Game Over Screen Styles */
+body.game-over {
+    background-color: #111; /* Darker background for Game Over screen */
+    color: #FF0000; /* Bright red text for Game Over */
+}
+
+body.game-over h1 {
+    font-size: 48px;
+    color: #FF0000; /* Bright red for Game Over title */
+    text-shadow: 3px 3px #000;
+}
+
+body.game-over p {
+    font-size: 20px;
+    color: #FF0000; /* Bright red text */
+}
+
+body.game-over button {
+    background-color: #FF0000; /* Red button background */
+    color: #000; /* Black text */
+    border: 2px solid #000; /* Black border */
+}
+
+body.game-over button:hover {
+    background-color: #000; /* Black hover background */
+    color: #FF0000; /* Red text on hover */
+}
+
+h1 {
+    color: #FF00FF; /* Bright magenta for the title */
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px #000; /* Shadow for depth */
+}
+
+.buttons {
+    margin: 20px 0;
+}
+
+button {
+    font-size: 16px;
+    margin: 10px;
+    padding: 15px 30px;
+    cursor: pointer;
+    background-color: #333; /* Dark gray button background */
+    color: #00FF00; /* Bright green text */
+    border: 2px solid #00FF00; /* Green border */
+    border-radius: 0; /* No rounded corners for retro look */
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #00FF00; /* Bright green hover */
+    color: #000; /* Black text on hover */
+}
+
+#results {
+    margin-top: 30px;
+    border: 2px solid #00FF00; /* Green border around results */
+    padding: 20px;
+    display: inline-block;
+    background-color: #111; /* Darker background for results */
+}
+
+#results p {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #00FF00; /* Bright green text */
+}
+
+/* Game Over Screen Styles */
+body.game-over {
+    background-color: #111; /* Darker background for Game Over screen */
+    color: #FF0000; /* Bright red text for Game Over */
+}
+
+body.game-over h1 {
+    font-size: 48px;
+    color: #FF0000; /* Bright red for Game Over title */
+    text-shadow: 3px 3px #000;
+}
+
+body.game-over p {
+    font-size: 20px;
+    color: #FF0000; /* Bright red text */
+}
+
+body.game-over button {
+    background-color: #FF0000; /* Red button background */
+    color: #000; /* Black text */
+    border: 2px solid #000; /* Black border */
+}
+
+body.game-over button:hover {
+    background-color: #000; /* Black hover background */
+    color: #FF0000; /* Red text on hover */
+}
+#difficulty-selector {
+    margin-bottom: 20px;
+}
+
+#difficulty-selector label {
+    font-size: 16px;
+    color: #00FF00; /* Bright green text */
+}
+
+#difficulty-selector select {
+    font-size: 16px;
+    padding: 5px;
+    background-color: #333; /* Dark gray background */
+    color: #00FF00; /* Bright green text */
+    border: 2px solid #00FF00; /* Green border */
+    font-family: 'Press Start 2P', cursive;
+}
