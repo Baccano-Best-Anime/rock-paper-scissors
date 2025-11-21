@@ -1,3 +1,4 @@
+/*07//11//2025*/
 :root {
     --main-bg-color: #000;
     --main-text-color: #00FF00;
@@ -143,4 +144,15 @@ body.game-over button:hover {
 #start-screen button:hover {
     background-color: var(--button-hover-bg-color);
     color: var(--button-hover-text-color);
+}
+
+#score-display {
+    font-size: 14px;
+    color: var(--main-text-color);
+    margin: 10px 0 20px 0;
+    border: 2px solid var(--main-text-color);
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #111;
+    text-transform: uppercase;
 }
