@@ -25,6 +25,15 @@ function setDifficulty() {
             <button onclick="playGame('lizard')">Lizard</button>
             <button onclick="playGame('spock')">Spock</button>
         `;
+    } else if (difficulty === "hard") {
+        // Add all options for hard difficulty
+        const hardOptions = [
+            "fire", "snake", "human", "tree", "wolf", "lizard", "air", "spock",
+            "dragon", "devil", "lightning", "gun"
+        ];
+        hardOptions.forEach(option => {
+            buttonsContainer.innerHTML += `<button onclick="playGame('${option}')">${capitalize(option)}</button>`;
+        });
     }
 }
 
@@ -37,6 +46,11 @@ function playGame(playerChoice) {
     let choices = ["rock", "paper", "scissors"]; // Default choices
     if (difficulty === "medium") {
         choices = ["rock", "paper", "scissors", "lizard", "spock"]; // Add lizard and spock for medium
+    } else if (difficulty === "hard") {
+        choices = [
+            "rock", "fire", "scissors", "snake", "human", "tree", "wolf", "lizard",
+            "paper", "air", "spock", "dragon", "devil", "lightning", "gun"
+        ]; // Add all options for hard
     }
 
     const computerChoice = choices[Math.floor(Math.random() * choices.length)]; // Random choice
@@ -66,14 +80,29 @@ function playGame(playerChoice) {
 // Function to determine if the player wins
 function isPlayerWinner(playerChoice, computerChoice) {
     const winningConditions = {
-        rock: ["scissors", "lizard"],
-        paper: ["rock", "spock"],
-        scissors: ["paper", "lizard"],
-        lizard: ["spock", "paper"],
-        spock: ["scissors", "rock"]
+        rock: ["fire", "scissors", "snake", "human", "wolf", "lizard", "tree"],
+        fire: ["scissors", "paper", "snake", "human", "tree", "wolf", "lizard"],
+        scissors: ["air", "tree", "paper", "snake", "human", "wolf", "lizard"],
+        snake: ["human", "wolf", "lizard", "tree", "paper", "air", "spock"],
+        human: ["tree", "wolf", "lizard", "paper", "air", "spock", "dragon"],
+        tree: ["wolf", "dragon", "lizard", "paper", "air", "spock", "devil"],
+        wolf: ["lizard", "paper", "air", "spock", "dragon", "lightning", "devil"],
+        lizard: ["paper", "air", "spock", "devil", "dragon", "gun", "lightning"],
+        paper: ["air", "rock", "spock", "devil", "dragon", "gun", "lightning"],
+        air: ["fire", "rock", "spock", "devil", "gun", "dragon", "lightning"],
+        spock: ["devil", "dragon", "rock", "fire", "scissors", "gun", "lightning"],
+        dragon: ["devil", "lightning", "fire", "rock", "scissors", "gun", "snake"],
+        devil: ["rock", "fire", "scissors", "gun", "snake", "human"],
+        lightning: ["gun", "scissors", "rock", "tree", "fire", "snake", "human"],
+        gun: ["rock", "tree", "scissors", "snake", "human", "wolf"]
     };
 
-    return winningConditions[playerChoice].includes(computerChoice);
+    return winningConditions[playerChoice]?.includes(computerChoice);
+}
+
+// Utility function to capitalize the first letter of a string
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 function showGameOverScreen() {
