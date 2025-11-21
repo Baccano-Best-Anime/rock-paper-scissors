@@ -1,4 +1,4 @@
-<!-- 07//11//2025 -->
+<!--14/11/2025-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,13 +12,27 @@
 <body>
     <!-- Start Screen -->
     <div id="start-screen">
-        <h1>Welcome to Rock Paper Scissors</h1>
-        <button onclick="startGame()">Start Game</button>
+        <h1>Welcome to the Game</h1>
+        <button onclick="showHowToPlay()">Start</button>
+    </div>
+    
+    <!-- How to Play -->
+    <div id="how-to-play" style="display:none;">
+        <h1>How to Play</h1>
+        <p>
+            Choose your option from the buttons.<br>
+            Beat the computer to increase your score and streak.<br>
+            If you lose all your lives, the game is over.<br>
+            Try to get the highest streak to enter the leaderboard!
+        </p>
+        <button onclick="startGame()">Got It!</button>
     </div>
 
     <!-- Game Interface -->
     <div id="game-interface" style="display: none;">
         <h1>Rock Paper Scissors</h1>
+
+        <!-- Difficulty Selector -->
         <div id="difficulty-selector">
             <label for="difficulty">Select Difficulty:</label>
             <select id="difficulty" onchange="setDifficulty()">
@@ -27,15 +41,82 @@
                 <option value="hard">Hard</option>
                 <option value="impossible">Impossible</option>
             </select>
+            <button id="show-rules">Rules</button>
         </div>
-        <div id="score-display">Wins: 0 | Losses: 0 | Draws: 0</div>
+
+        <!-- Leaderboard Toggle Button -->
+        <button id="toggle-leaderboard">Show Leaderboard</button>
+
+        <!-- Leaderboard -->
+        <div id="leaderboard" style="display: none;">
+            <h2>Leaderboard</h2>
+            <ol id="leaderboard-list"></ol>
+        </div>
+
+        <!-- Score Display -->
+        <div id="score-display">
+            Wins: 0 | Losses: 0 | Draws: 0<br>
+            Current Streak: 0 | High Score: 0
+        </div>
+
+        <!-- Game Buttons -->
         <div class="buttons"></div>
+
+        <!-- Results -->
         <div id="results">
             <p id="player-choice">Player Choice: </p>
             <p id="computer-choice">Computer Choice: </p>
             <p id="game-result">Result: </p>
             <p id="lives">Lives Remaining: 3</p>
+            <p id="current-streak">Current Winning Streak: 0</p>
+            <p id="high-score">High Score: 0</p>
         </div>
+    </div> <!-- End of game-interface -->
+
+    <!-- Game Over Screen (outside of game-interface!) -->
+    <!-- Game Over Screen (updated) -->
+<div id="game-over-screen" style="display: none;">
+    <h1>Game Over</h1>
+    <p>You have no lives left!</p>
+
+    <!-- Name Entry Box -->
+    <div id="name-entry" style="display:none; margin-top:20px;">
+        <label>Enter your name:</label><br>
+        <input id="player-name-input" type="text" placeholder="Your name" style="margin-top:10px;">
+        <button id="save-score-btn" style="margin-top:10px;">Save Score</button>
     </div>
+
+    <!-- Not high enough for leaderboard -->
+    <div id="no-leaderboard-msg" style="display:none; margin-top:20px;">
+        <p>Your score wasn't high enough for the leaderboard.</p>
+    </div>
+
+    <button onclick="restartGame()" style="margin-top:20px;">Restart Game</button>
+</div>
+
+    <!-- Rules Overlay -->
+<div id="rules-overlay" style="display: none;">
+    <div id="rules-content">
+        <h2>Winning Rules</h2>
+
+        <!-- Difficulty Selector inside Rules -->
+        <div class="custom-select-wrapper">
+            <select id="rules-difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="impossible">Impossible</option>
+            </select>
+        </div>
+
+        <ul id="rules-list">
+            <li>Rock beats Scissors</li>
+            <li>Scissors beats Paper</li>
+            <li>Paper beats Rock</li>
+        </ul>
+        <button id="close-rules">Close</button>
+    </div>
+</div>
 </body>
 </html>
+
