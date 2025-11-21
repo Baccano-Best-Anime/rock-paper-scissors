@@ -1,4 +1,4 @@
-/*14/11/2025*/
+/*21/11/2025*/
 :root {
     --main-bg-color: #000;
     --main-text-color: #00FF00;
@@ -9,7 +9,15 @@
     --game-over-text-color: #FF0000;
 }
 
-/* ---------- GLOBAL STYLES ---------- */
+/* ---------- GLOBAL ---------- */
+* {
+    box-sizing: border-box;
+}
+
+.hidden {
+    display: none !important;
+}
+
 body {
     text-align: center;
     font-family: 'Press Start 2P', cursive;
@@ -30,17 +38,14 @@ body {
 }
 
 h1 {
-    color: #FF00FF;
     font-size: 24px;
     margin-bottom: 20px;
+    color: #FF00FF;
     text-shadow: 2px 2px var(--main-bg-color);
 }
 
 /* ---------- BUTTONS & SELECTS ---------- */
-button,
-#start-screen button,
-body.game-over button,
-#difficulty-selector select {
+button, select {
     font-size: 16px;
     padding: 15px 30px;
     cursor: pointer;
@@ -54,38 +59,81 @@ body.game-over button,
     margin: 10px;
 }
 
-button:hover,
-#start-screen button:hover,
-#difficulty-selector select:hover {
+button:hover, select:hover,
+button:focus, select:focus {
     background-color: var(--button-hover-bg-color);
     color: var(--button-hover-text-color);
+    outline: none;
+    box-shadow: 0 0 15px var(--main-text-color);
 }
 
-#difficulty-selector select {
-    padding: 5px;
+/* ---------- START SCREEN ---------- */
+#start-screen {
+    margin-top: 20vh;
+}
+
+/* ---------- INFO BOXES ---------- */
+.info-box, #how-to-play, #leaderboard, #rules-content {
+    display: inline-block;
+    max-width: 600px;
+    padding: 20px 30px;
+    margin: 20px auto;
+    background-color: #111;
     border: 2px solid var(--main-text-color);
-    background-color: var(--button-bg-color);
+    color: var(--main-text-color);
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 0 15px var(--main-text-color);
+    border-radius: 5px;
 }
 
-/* ---------- RESULTS & SCORE ---------- */
-#results,
-#score-display {
+/* Headings inside boxes */
+.info-box h1, #how-to-play h1, #leaderboard h2, #rules-content h2 {
+    font-size: 18px;
+    color: #FF00FF;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px var(--main-bg-color);
+}
+
+/* Paragraphs & lists inside boxes */
+.info-box p, #how-to-play p, #rules-content p, #rules-content li {
+    margin-bottom: 10px;
+}
+
+/* ---------- GAME INTERFACE ---------- */
+#results, #score-display {
     display: inline-block;
     border: 2px solid var(--main-text-color);
     padding: 20px;
     background-color: #111;
     margin-top: 20px;
     text-transform: uppercase;
+    max-width: 90%;
+}
+#score-display {
+    text-align: center;
+    margin: 20px auto 10px auto; /* bottom margin smaller to leaderboard */
 }
 
-#results p,
-#score-display p {
+
+#score-display #win-loss-draw,
+#score-display #streak-highscore {
+    margin: 5px 0;
+    font-size: 14px;
+    display: block;
+}
+
+#results p, #score-display p {
     font-size: 14px;
     margin: 10px 0;
-    color: var(--main-text-color);
 }
-
-/* ---------- GAME OVER SCREEN ---------- */
+#score-display p {
+    text-align: center;
+    margin: 3px 0;
+    font-size: 14px;
+}
+/* ---------- GAME OVER ---------- */
 body.game-over {
     background-color: var(--game-over-bg-color);
     color: var(--game-over-text-color);
@@ -93,13 +141,11 @@ body.game-over {
 
 body.game-over h1 {
     font-size: 48px;
-    color: var(--game-over-text-color);
     text-shadow: 3px 3px var(--main-bg-color);
 }
 
 body.game-over p {
     font-size: 20px;
-    color: var(--game-over-text-color);
 }
 
 body.game-over button {
@@ -113,146 +159,189 @@ body.game-over button:hover {
     color: var(--game-over-text-color);
 }
 
-/* ---------- START SCREEN ---------- */
-#start-screen {
+#game-over-screen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
     text-align: center;
-    margin-top: 20%;
-    color: var(--main-text-color);
+    max-width: 90%;
+    width: 400px;
+    padding: 30px;
+    box-shadow: 0 0 25px var(--main-text-color);
+    animation: popIn 0.5s ease-out forwards;
 }
 
-#start-screen h1 {
-    font-size: 32px;
-    color: #FF00FF;
-    text-shadow: 2px 2px var(--main-bg-color);
+body.game-over::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 50; /* behind #game-over-screen */
 }
 
-/* ---------- DIFFICULTY SELECTOR ---------- */
-#difficulty-selector {
-    margin-bottom: 20px;
+@keyframes popIn {
+    0% { transform: translate(-50%, -60%) scale(0.5); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-#difficulty-selector label {
-    font-size: 16px;
-    color: var(--main-text-color);
-}
-/* ---------- INFO BOX STYLES ---------- */
-.info-box, #how-to-play, #leaderboard, #rules-overlay #rules-content {
-    display: inline-block;               /* Shrinks to content width */
-    max-width: 600px;                    /* Optional: limits width */
-    padding: 20px 30px;                  /* Space inside the box */
-    margin: 20px auto;                   /* Center horizontally */
-    background-color: #111;              /* Dark background for contrast */
-    border: 2px solid var(--main-text-color);  /* Neon green border */
-    color: var(--main-text-color);       /* Text color */
-    text-align: left;                    /* Align text inside box */
-    font-size: 14px;
-    line-height: 1.5;
-    box-shadow: 0 0 15px #00FF00;       /* Neon glow effect */
-    border-radius: 5px;                  /* Rounded corners */
-    position: relative;
-    z-index: 10;
+/* ---------- LEADERBOARD ---------- */
+/* Center the Show Leaderboard button */
+#toggle-leaderboard {
+    display: block;
+    margin: 5px auto;
 }
 
-/* Headings inside boxes */
-.info-box h1, #how-to-play h1, #leaderboard h2, #rules-content h2 {
-    font-size: 18px;
-    color: #FF00FF;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px var(--main-bg-color);
+/* Leaderboard hidden state */
+#leaderboard {
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(-10px);
+
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease,
+        max-height 0.4s ease,
+        margin 0.3s ease;
+}
+/* Leaderboard visible state */
+#leaderboard.show {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+    margin: 20px auto;
 }
 
-/* Paragraphs inside boxes */
-.info-box p, #how-to-play p, #rules-content p, #rules-content li {
-    margin-bottom: 10px;
+
+
+/* Optional: center other UI elements */
+#game-interface {
+    text-align: center;
 }
 
-/* Center the leaderboard list */
+
+
 #leaderboard ol {
-    padding-left: 20px;
+    padding-left: 0;
+    list-style-position: inside;
+    display: inline-block;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-/* Rules overlay background */
+/* ---------- RULES OVERLAY ---------- */
+
 #rules-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.8);  /* Semi-transparent overlay */
+    background: rgba(0, 0, 0, 0.7); /* semi-transparent dark overlay */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 50;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
-/* Rules content box */
+#rules-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 #rules-content {
+    position: relative; /* Add this */
     background-color: #111;
-    border: 2px solid var(--main-text-color);
-    padding: 25px 35px;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: 0 0 15px #00FF00;
-    border-radius: 8px;
     color: var(--main-text-color);
+    border: 2px solid var(--main-text-color);
+    border-radius: 8px;
+    padding: 30px 40px;
+    max-width: 600px;
+    width: 90%;
     text-align: left;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 0 20px var(--main-text-color);
+    animation: popInRules 0.5s ease-out forwards;
 }
 
-#rules-difficulty {
-    font-size: 16px;                     /* Same as buttons */
-    padding: 15px 30px;                  /* Match button padding */
-    cursor: pointer;
+/* Headings inside rules */
+#rules-content h2 {
+    font-size: 18px;
+    color: #FF00FF;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px var(--main-bg-color);
+}
+
+/* Paragraphs and lists inside rules */
+#rules-content p,
+#rules-content li {
+    margin-bottom: 10px;
+}
+
+/* Pop-in animation for rules overlay */
+@keyframes popInRules {
+    0% { transform: translateY(-20px) scale(0.8); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Optional: Add glow effect on rules box */
+#rules-content::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid var(--main-text-color);
+    border-radius: 10px;
+    box-shadow: 0 0 15px var(--main-text-color);
+    pointer-events: none;
+    animation: neonGlow 1.5s infinite alternate;
+}
+
+@keyframes neonGlow {
+    from { box-shadow: 0 0 10px var(--main-text-color); }
+    to { box-shadow: 0 0 25px var(--main-text-color); }
+}
+
+/* Close button (optional, if you have one inside rules) */
+#rules-content button {
+    display: inline-block;
+    margin-top: 20px;
     font-family: 'Press Start 2P', cursive;
     text-transform: uppercase;
-    border-radius: 0;                    /* Match button corners */
+    font-size: 14px;
+    padding: 10px 25px;
+    border-radius: 0;
     border: 2px solid var(--main-text-color);
     background-color: var(--button-bg-color);
     color: var(--main-text-color);
+    cursor: pointer;
     transition: 0.2s;
-    appearance: none;                     /* Remove default arrow */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    position: relative;
 }
 
-/* Hover effect */
-#rules-difficulty:hover {
+#rules-content button:hover {
     background-color: var(--button-hover-bg-color);
     color: var(--button-hover-text-color);
-}
-
-/* Custom arrow */
-#rules-difficulty::after {
-    content: "▼";
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: var(--main-text-color);
-    font-size: 12px;
-}
-
-/* Close button */
-#rules-content button {
-    margin-top: 15px;
-}
-
-/* Center leaderboard box and its content */
-#leaderboard {
-    text-align: center;   /* Center text inside the box */
-}
-
-/* Center the ordered list */
-#leaderboard ol {
-    padding-left: 0;       /* Remove default indentation */
-    list-style-position: inside; /* Keep numbers inside the box */
-    display: inline-block; /* Shrinks list to content width */
-    text-align: left;      /* Keep numbers aligned left inside the list */
+    box-shadow: 0 0 15px var(--main-text-color);
 }
 
 
-
+/* ---------- CUSTOM SELECT ---------- */
 .custom-select-wrapper {
     position: relative;
     display: inline-block;
@@ -269,7 +358,7 @@ body.game-over button:hover {
     background-color: var(--button-bg-color);
     color: var(--main-text-color);
     transition: 0.2s;
-    appearance: none; /* remove default arrow */
+    appearance: none; /* Remove default arrow */
 }
 
 .custom-select-wrapper select:hover {
@@ -277,7 +366,6 @@ body.game-over button:hover {
     color: var(--button-hover-text-color);
 }
 
-/* Arrow added to wrapper instead */
 .custom-select-wrapper::after {
     content: "▼";
     position: absolute;
@@ -287,4 +375,151 @@ body.game-over button:hover {
     pointer-events: none;
     color: var(--main-text-color);
     font-size: 12px;
+}
+
+/* Player Name Input - match game buttons */
+#player-name-input {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px; /* same as buttons */
+    padding: 15px 30px; /* same as buttons */
+    margin: 10px auto;
+    display: block;
+    width: 220px; /* similar width to buttons */
+    text-transform: uppercase;
+    text-align: center;
+    background-color: var(--button-bg-color);
+    color: var(--main-text-color);
+    border: 2px solid var(--main-text-color);
+    border-radius: 0; /* matches buttons */
+    cursor: text;
+    transition: 0.2s;
+    outline: none;
+}
+
+/* Glow effect on focus, like buttons on hover */
+#player-name-input:focus {
+    background-color: var(--button-hover-bg-color);
+    color: var(--button-hover-text-color);
+    box-shadow: 0 0 15px var(--main-text-color);
+}
+
+/* Score Saved Prompt with Slide-Up */
+#score-saved-prompt {
+    font-family: 'Press Start 2P', cursive;
+    color: #00FF00;
+    background-color: #111;
+    border: 2px solid var(--main-text-color);
+    padding: 15px 30px;
+    margin: 20px auto;
+    display: inline-block;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px;
+    box-shadow: 0 0 15px var(--main-text-color);
+    opacity: 0;
+    transform: translateY(0); /* start at normal position */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Show class triggers fade in */
+#score-saved-prompt.show {
+    opacity: 1;
+    transform: translateY(-20px); /* slide up slightly */
+}
+
+/* Optional: animate out completely after 2s */
+#score-saved-prompt.hide {
+    opacity: 0;
+    transform: translateY(-50px); /* slide up further when hiding */
+}
+
+
+
+/* Center Game Over buttons */
+#game-over-buttons {
+    text-align: center; /* centers inline-block buttons inside */
+    margin-top: 20px;   /* space from input or message above */
+}
+
+/* Optional: spacing between buttons */
+#game-over-buttons button {
+    display: inline-block;
+    margin: 10px; /* space between Save and Restart buttons */
+}
+#player-name-input {
+    display: block;
+    margin: 10px auto; /* centers the input horizontally */
+}
+
+/* ---------- UNSAVED SCORE POPUP ---------- */
+#unsaved-score-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+#unsaved-score-popup.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#unsaved-score-content {
+    background-color: #111;
+    border: 2px solid var(--main-text-color);
+    padding: 30px 40px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 20px var(--main-text-color);
+    border-radius: 8px;
+    animation: popIn 0.5s ease-out forwards;
+}
+
+#unsaved-score-content h1 {
+    font-size: 24px;
+    color: #FF00FF;
+    text-shadow: 2px 2px var(--main-bg-color);
+    margin-bottom: 15px;
+}
+
+#unsaved-score-content p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+#unsaved-score-buttons button {
+    font-size: 14px;
+    padding: 10px 25px;
+    margin: 5px;
+    border-radius: 0;
+    border: 2px solid var(--main-text-color);
+    background-color: var(--button-bg-color);
+    color: var(--main-text-color);
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: 'Press Start 2P', cursive;
+    transition: 0.2s;
+}
+
+#unsaved-score-buttons button:hover {
+    background-color: var(--button-hover-bg-color);
+    color: var(--button-hover-text-color);
+    box-shadow: 0 0 15px var(--main-text-color);
+}
+
+/* Reuse existing popIn animation from game-over screen */
+@keyframes popInGameOver {
+    0% { transform: translate(-50%, -60%) scale(0.5); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+#game-over-screen {
+    animation: popInGameOver 0.5s ease-out forwards;
 }

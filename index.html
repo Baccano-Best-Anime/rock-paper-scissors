@@ -1,4 +1,4 @@
-<!--14/11/2025-->
+<!--21/11/2025-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,15 +9,17 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
+
 <body>
+
     <!-- Start Screen -->
     <div id="start-screen">
-        <h1>Welcome to the Game</h1>
+        <h1>Welcome to the Game of Rock Paper Scissors</h1>
         <button onclick="showHowToPlay()">Start</button>
     </div>
-    
+
     <!-- How to Play -->
-    <div id="how-to-play" style="display:none;">
+    <div id="how-to-play" class="info-box hidden">
         <h1>How to Play</h1>
         <p>
             Choose your option from the buttons.<br>
@@ -29,94 +31,113 @@
     </div>
 
     <!-- Game Interface -->
-    <div id="game-interface" style="display: none;">
+    <div id="game-interface" class="hidden">
         <h1>Rock Paper Scissors</h1>
 
         <!-- Difficulty Selector -->
         <div id="difficulty-selector">
             <label for="difficulty">Select Difficulty:</label>
-            <select id="difficulty" onchange="setDifficulty()">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-                <option value="impossible">Impossible</option>
-            </select>
+            <div class="custom-select-wrapper">
+                <select id="difficulty" onchange="setDifficulty()">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="impossible">Impossible</option>
+                </select>
+            </div>
             <button id="show-rules">Rules</button>
         </div>
 
-        <!-- Leaderboard Toggle Button -->
+        <!-- Leaderboard Toggle -->
         <button id="toggle-leaderboard">Show Leaderboard</button>
 
         <!-- Leaderboard -->
-        <div id="leaderboard" style="display: none;">
+        <div id="leaderboard" class="info-box hidden">
             <h2>Leaderboard</h2>
             <ol id="leaderboard-list"></ol>
         </div>
 
         <!-- Score Display -->
-        <div id="score-display">
-            Wins: 0 | Losses: 0 | Draws: 0<br>
-            Current Streak: 0 | High Score: 0
+        <div id="score-display" class="info-box">
+            <p id="win-loss-draw">
+                Wins: <span id="wins">0</span> |
+                Losses: <span id="losses">0</span> |
+                Draws: <span id="draws">0</span>
+            </p>
+
+            <p id="streak-highscore">
+                Current Streak: <span id="current-streak">0</span> |
+                High Score: <span id="high-score">0</span>
+            </p>
         </div>
 
         <!-- Game Buttons -->
         <div class="buttons"></div>
 
-        <!-- Results -->
-        <div id="results">
+        <!-- Result Box -->
+        <div id="result-box" class="info-box">
             <p id="player-choice">Player Choice: </p>
             <p id="computer-choice">Computer Choice: </p>
             <p id="game-result">Result: </p>
             <p id="lives">Lives Remaining: 3</p>
-            <p id="current-streak">Current Winning Streak: 0</p>
-            <p id="high-score">High Score: 0</p>
         </div>
-    </div> <!-- End of game-interface -->
 
-    <!-- Game Over Screen (outside of game-interface!) -->
-    <!-- Game Over Screen (updated) -->
-<div id="game-over-screen" style="display: none;">
-    <h1>Game Over</h1>
-    <p>You have no lives left!</p>
+    </div>  
 
-    <!-- Name Entry Box -->
-    <div id="name-entry" style="display:none; margin-top:20px;">
-        <label>Enter your name:</label><br>
-        <input id="player-name-input" type="text" placeholder="Your name" style="margin-top:10px;">
-        <button id="save-score-btn" style="margin-top:10px;">Save Score</button>
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="info-box hidden">
+        <h1>Game Over</h1>
+        <p>You have no lives left!</p>
+    
+        <!-- Name Entry -->
+        <div id="name-entry" class="hidden">
+            <label>Enter your name:</label><br>
+            <input id="player-name-input" type="text" placeholder="Your name">
+        </div>
+    
+        <!-- Buttons -->
+        <div id="game-over-buttons">
+            <button id="save-score-btn">Save Score</button>
+            <button id="restart-button">Restart Game</button>
+        </div>
+    
+        <!-- Not high enough for leaderboard -->
+        <div id="no-leaderboard-msg" class="hidden">
+            <p>Your score wasn't high enough for the leaderboard.</p>
+        </div>
+    
+        <!-- Score Saved Prompt -->
+        <div id="score-saved-prompt" class="hidden">Score Saved!</div>
     </div>
 
-    <!-- Not high enough for leaderboard -->
-    <div id="no-leaderboard-msg" style="display:none; margin-top:20px;">
-        <p>Your score wasn't high enough for the leaderboard.</p>
+    <!-- Unsaved Score Warning -->
+    <div id="unsaved-score-popup" class="hidden">
+        <div id="unsaved-score-content">
+            <h1>WARNING</h1>
+            <p>You haven't saved your score yet. Are you sure you want to restart?</p>
+            <div id="unsaved-score-buttons">
+                <button id="cancel-restart">Cancel</button>
+                <button id="confirm-restart">Restart Anyway</button>
+            </div>
+        </div>
     </div>
-
-    <button onclick="restartGame()" style="margin-top:20px;">Restart Game</button>
-</div>
 
     <!-- Rules Overlay -->
-<div id="rules-overlay" style="display: none;">
-    <div id="rules-content">
-        <h2>Winning Rules</h2>
-
-        <!-- Difficulty Selector inside Rules -->
-        <div class="custom-select-wrapper">
-            <select id="rules-difficulty">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-                <option value="impossible">Impossible</option>
-            </select>
+    <div id="rules-overlay">
+        <div id="rules-content" class="info-box">
+            <h2>Winning Rules</h2>
+            <div class="custom-select-wrapper">
+                <select id="rules-difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="impossible">Impossible</option>
+                </select>
+            </div>
+            <ul id="rules-list"></ul>
+            <button id="close-rules">Close</button>
         </div>
-
-        <ul id="rules-list">
-            <li>Rock beats Scissors</li>
-            <li>Scissors beats Paper</li>
-            <li>Paper beats Rock</li>
-        </ul>
-        <button id="close-rules">Close</button>
     </div>
-</div>
+
 </body>
 </html>
-

@@ -1,17 +1,20 @@
-//14/11/2025//
-// Function to manage the Game state variables
+//21/11/2025//
+// Game State
 let lives = 3;
 let score = { wins: 0, losses: 0, draws: 0 };
 let currentStreak = 0;
 
-let difficulty = localStorage.getItem("difficulty") || "easy";
-// Load difficulty-specific high score + leaderboard
-let highScore = parseInt(localStorage.getItem(`highScore_${difficulty}`)) || 0;
-let leaderboard = JSON.parse(localStorage.getItem(`leaderboard_${difficulty}`)) || [];
-//for storing player name
-let playerName = localStorage.getItem(`lastName_${difficulty}`) || "";
 
-// Function defining the winning conditions for each choice
+// Difficulty
+let difficulty = localStorage.getItem("difficulty") || "easy";
+
+// Storage
+let highScore = getHighScore();
+let leaderboard = getLeaderboard();
+let playerName = getLastPlayerName();
+let saveScoreButtonClicked = false;
+
+// Winning Conditions
 const winningConditions = { 
     rock: ["fire","scissors","snake","man","woman","wolf","lizard","tree","sun","axe","monkey","cockroach"],
     fire: ["scissors","paper","snake","man","woman","tree","wolf","lizard","axe","monkey","cockroach","moon"],
@@ -37,252 +40,52 @@ const winningConditions = {
     sun: ["fire","scissors","axe","snake","monkey","woman","man","tree","cockroach","wolf","lizard","paper"],
     axe: ["snake","monkey","woman","man","tree","cockroach","wolf","lizard","paper","moon","air","bowl"],
     monkey: ["woman","man","tree","cockroach","wolf","lizard","spock","paper","moon","air","bowl","alien"],
-    cockroach: ["wolf","spock","paper","moon","air","bowl","lizard","alien","dragon","devil","lightning","nuke"],
+    cockroach: ["wolf","spock","paper","moon","air","bowl","lizard","alien","dragon","devil","lightning","nuke"]
 };
 
-//function to capitalize first letter
+// Utility
 function capitalize(word) {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-//function to update score display
-function updateScoreDisplay() {
-    const display = document.getElementById("score-display");
-    display.innerHTML = `
-        Wins: ${score.wins} | Losses: ${score.losses} | Draws: ${score.draws}<br>
-        Current Streak: ${currentStreak} | High Score: ${highScore}
-    `;
-}
-//function to get options based on difficulty
-function getOptionsForDifficulty(difficulty) {
+// Options By Difficulty
+function getOptionsForDifficulty(diff) {
     const options = {
         easy: ["rock","paper","scissors"],
         medium: ["rock","paper","scissors","lizard","spock"],
         hard: ["rock","fire","scissors","snake","man","tree","wolf","lizard","paper","air","spock","dragon","devil","lightning","gun"],
         impossible: ["rock","fire","scissors","snake","man","woman","tree","wolf","lizard","paper","air","spock","dragon","devil","lightning","gun","dynamite","nuke","alien","bowl","moon","cockroach","monkey","axe","sun"]
     };
-    return options[difficulty];
+    return options[diff];
 }
 
-//function to set difficulty and update buttons
-function setDifficulty() {
-    difficulty = document.getElementById("difficulty").value;
-    localStorage.setItem("difficulty", difficulty);
-// Load difficulty-specific data
-    highScore = parseInt(localStorage.getItem(`highScore_${difficulty}`)) || 0;
-    leaderboard = JSON.parse(localStorage.getItem(`leaderboard_${difficulty}`)) || [];
-    playerName = localStorage.getItem(`lastName_${difficulty}`) || "";
+// Storage Helpers
+function getHighScore() { return parseInt(localStorage.getItem(`highScore_${difficulty}`)) || 0; }
+function getLeaderboard() { return JSON.parse(localStorage.getItem(`leaderboard_${difficulty}`)) || []; }
+function getLastPlayerName() { return localStorage.getItem(`lastName_${difficulty}`) || ""; }
+function saveHighScore() { localStorage.setItem(`highScore_${difficulty}`, highScore); }
+function saveLeaderboard() { localStorage.setItem(`leaderboard_${difficulty}`, JSON.stringify(leaderboard)); }
+function saveLastPlayerName() { localStorage.setItem(`lastName_${difficulty}`, playerName); }
 
-    updateScoreDisplay();
-    showLeaderboard();
-// Build buttons again
-    const buttonsContainer = document.querySelector(".buttons");
-    buttonsContainer.innerHTML = "";
-
-// Create buttons based on selected difficulty
-    getOptionsForDifficulty(difficulty).forEach(option => {
-        const button = document.createElement("button");
-        button.textContent = capitalize(option);
-        button.onclick = () => playGame(option);
-        buttonsContainer.appendChild(button);
-    });
-// Update high score display
-    document.getElementById("high-score").textContent = `High Score: ${highScore}`;
+// UI Display
+function updateScoreDisplay() {
+    document.getElementById("wins").textContent = score.wins;
+    document.getElementById("losses").textContent = score.losses;
+    document.getElementById("draws").textContent = score.draws;
+    document.getElementById("current-streak").textContent = currentStreak;
+    document.getElementById("high-score").textContent = highScore;
 }
 
-// function to show How to Play screen
-function showHowToPlay() {
-    document.getElementById("start-screen").classList.add("hidden");
-    document.getElementById("how-to-play").classList.remove("hidden");
-}
-//function to start the game from How to Play screen
-function startGame() {
-    document.getElementById("how-to-play").classList.add("hidden");
-    document.getElementById("game-interface").classList.remove("hidden");
-    setDifficulty();
-}
-
-//function to play the game and calculate the result and show the result including lives remaining
-function playGame(playerChoice) {
-    if (lives <= 0) return;
-
-    const choices = getOptionsForDifficulty(difficulty);
-    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
-    let result;
-
-    if (playerChoice === computerChoice) {
-        result = "It's a draw!";
-        score.draws++;
-        currentStreak = 0;
-    } else if (winningConditions[playerChoice]?.includes(computerChoice)) {
-        result = "You win!";
-        score.wins++;
-        currentStreak++;
-
-        if (currentStreak > highScore) {
-            highScore = currentStreak;
-            localStorage.setItem(`highScore_${difficulty}`, highScore);
-        }
-    } else {
-        result = "You lose!";
-        score.losses++;
-        lives--;
-        currentStreak = 0;
-    }
-// update UI
-    document.getElementById("player-choice").textContent = `Player Choice: ${capitalize(playerChoice)}`;
-    document.getElementById("computer-choice").textContent = `Computer Choice: ${capitalize(computerChoice)}`;
-    document.getElementById("game-result").textContent = `Result: ${result}`;
-    document.getElementById("lives").textContent = `Lives Remaining: ${lives}`;
-    document.getElementById("current-streak").textContent = `Current Winning Streak: ${currentStreak}`;
-    document.getElementById("high-score").textContent = `High Score: ${highScore}`;
-    updateScoreDisplay();
-
-    if (lives <= 0) gameOver();
-}
-
-//function to show game over screen
-function gameOver() {
-    document.getElementById("game-interface").classList.add("hidden");
-    document.getElementById("game-over-screen").classList.remove("hidden");
-
-    // function to show name entry if qualified for leaderboard
-    const leaderboardData =
-        JSON.parse(localStorage.getItem(`leaderboard_${difficulty}`)) || [];
-
-    const lowestScore =
-        leaderboardData.length < 5 ? 0 : leaderboardData[leaderboardData.length - 1].score;
-
-    
-    if (highScore > lowestScore) {
-        document.getElementById("name-entry").classList.remove("hidden");
-        document.getElementById("no-leaderboard-msg").classList.add("hidden");
-        document.getElementById("player-name-input").value = playerName;
-    } else {
-        document.getElementById("name-entry").classList.add("hidden");
-        document.getElementById("no-leaderboard-msg").classList.remove("hidden");
-    }
-}
-
-// Event listener for saving score and name
-// Combined DOMContentLoaded for Save Score + Rules overlay + Leaderboard
-document.addEventListener("DOMContentLoaded", () => {
-
-    // --- Leaderboard Toggle ---
-    const toggleLeaderboardBtn = document.getElementById("toggle-leaderboard");
-const leaderboardContainer = document.getElementById("leaderboard");
-
-toggleLeaderboardBtn.addEventListener("click", () => {
-    leaderboardContainer.classList.toggle("hidden");
-});
-
-    // --- Save Score Button ---
-    document.getElementById("save-score-btn").addEventListener("click", () => {
-        let name = document.getElementById("player-name-input").value.trim();
-        if (!name) return alert("Please enter a name.");
-
-        localStorage.setItem(`lastName_${difficulty}`, name);
-        playerName = name;
-
-        updateLeaderboard(playerName, highScore);
-        showLeaderboard();
-
-        document.getElementById("name-entry").style.display = "none";
-        alert("Score saved!");
-    });
-
-    //function to handle Rules Overlay
-    const showRulesButton = document.getElementById("show-rules");
-    const rulesOverlay = document.getElementById("rules-overlay");
-    const closeRulesButton = document.getElementById("close-rules");
-    const rulesDifficultySelect = document.getElementById("rules-difficulty");
-   
-   
-    // Function to show rules image based on selected difficulty
-    function showRules(difficulty) {
-        const rulesList = document.getElementById("rules-list");
-        rulesList.innerHTML = "";
-
-        const img = document.createElement("img");
-        img.src = `images/${difficulty}.png`;
-        img.alt = `${difficulty} rules`;
-        img.style.width = "150px";
-        img.style.display = "block";
-        img.style.margin = "10px auto";
-
-        rulesList.appendChild(img);
-    }
-    // Event listeners for Rules Overlay
-    showRulesButton.onclick = () => {
-        rulesOverlay.classList.add("show");
-        showRules(rulesDifficultySelect.value);
-    };
-    
-    closeRulesButton.onclick = () => {
-        rulesOverlay.classList.remove("show");
-    };
-
-    
-
-    rulesDifficultySelect.addEventListener("change", () =>
-        showRules(rulesDifficultySelect.value)
-    );
-
-    // Show leaderboard on page load
-    showLeaderboard();
-});
-
-// Function to restart the game 
-function restartGame() {
-    // Reset game state
-    lives = 3;
-    score = { wins: 0, losses: 0, draws: 0 };
-    currentStreak = 0;
-
-    // Hide Game Over, show Game Interface
-    document.getElementById("game-over-screen").classList.add("hidden");
-    document.getElementById("game-interface").classList.remove("hidden");
-
-    // Hide name entry and no-leaderboard message
-    document.getElementById("name-entry").classList.add("hidden");
-    document.getElementById("no-leaderboard-msg").classList.add("hidden");
-
-    // Rebuild buttons for current difficulty
-    setDifficulty();
-
-    // Update score display
-    updateScoreDisplay();
-
-    // Reset results display
-    document.getElementById("player-choice").textContent = "Player Choice: ";
-    document.getElementById("computer-choice").textContent = "Computer Choice: ";
-    document.getElementById("game-result").textContent = "Result: ";
-    document.getElementById("lives").textContent = `Lives Remaining: ${lives}`;
-    document.getElementById("current-streak").textContent = `Current Winning Streak: ${currentStreak}`;
-    document.getElementById("high-score").textContent = `High Score: ${highScore}`;
-}
-
-// Function to update leaderboard
-function updateLeaderboard(name, scoreValue) {
-     // Load current difficulty leaderboard again to be safe
-    leaderboard = JSON.parse(localStorage.getItem(`leaderboard_${difficulty}`)) || [];
-
-    leaderboard.push({ name: name, score: scoreValue });
-     // Sort descending by score
-    leaderboard.sort((a, b) => b.score - a.score);
-      // Keep top 5 only
-    leaderboard = leaderboard.slice(0, 5);
-      // Save difficulty-specific leaderboard
-    localStorage.setItem(`leaderboard_${difficulty}`, JSON.stringify(leaderboard));
-}
-//Function to show leaderboard
+// Leaderboard Display
 function showLeaderboard() {
     const list = document.getElementById("leaderboard-list");
     list.innerHTML = "";
-    // Load correct leaderboard
-    leaderboard = JSON.parse(localStorage.getItem(`leaderboard_${difficulty}`)) || [];
+    leaderboard = getLeaderboard();
 
-    if (leaderboard.length === 0) {
+    // 🔥 Make sure leaderboard always stays sorted correctly
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    if (!leaderboard.length) {
         list.innerHTML = "<li>No scores yet!</li>";
         return;
     }
@@ -292,4 +95,251 @@ function showLeaderboard() {
         li.textContent = `${entry.name} - ${entry.score}`;
         list.appendChild(li);
     });
+}
+
+// Rebuild Buttons Based on Difficulty
+function rebuildButtons() {
+    const container = document.querySelector(".buttons");
+    container.innerHTML = "";
+
+    getOptionsForDifficulty(difficulty).forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = capitalize(option);
+        btn.onclick = () => playGame(option);
+        container.appendChild(btn);
+    });
+}
+
+// Difficulty Change Handling
+function setDifficulty() {
+    difficulty = document.getElementById("difficulty").value;
+
+    localStorage.setItem("difficulty", difficulty);
+
+    highScore = getHighScore();
+    leaderboard = getLeaderboard();
+    playerName = getLastPlayerName();
+
+    rebuildButtons();
+    updateScoreDisplay();
+    showLeaderboard();
+    showRules(difficulty);
+}
+
+// Game Start
+function showHowToPlay() {
+    document.getElementById("start-screen").classList.add("hidden");
+    document.getElementById("how-to-play").classList.remove("hidden");
+}
+
+function startGame() {
+    document.getElementById("how-to-play").classList.add("hidden");
+    document.getElementById("game-interface").classList.remove("hidden");
+
+    rebuildButtons();
+    updateScoreDisplay();
+    showLeaderboard();
+}
+
+// Main Game Logic
+function playGame(playerChoice) {
+    if (lives <= 0) return;
+
+    document.getElementById("difficulty").disabled = true;
+
+    const choices = getOptionsForDifficulty(difficulty);
+    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+    let result;
+
+    if (playerChoice === computerChoice) {
+        result = "It's a draw!";
+        score.draws++;
+        
+
+    } else if (winningConditions[playerChoice].includes(computerChoice)) {
+        result = "You win!";
+        score.wins++;
+        currentStreak++;
+
+        
+    } else {
+        result = "You lose!";
+        score.losses++;
+        lives--;
+        currentStreak = 0;
+    }
+
+    document.getElementById("player-choice").textContent = `Player Choice: ${capitalize(playerChoice)}`;
+    document.getElementById("computer-choice").textContent = `Computer Choice: ${capitalize(computerChoice)}`;
+    document.getElementById("game-result").textContent = `Result: ${result}`;
+    document.getElementById("lives").textContent = `Lives Remaining: ${lives}`;
+
+    updateScoreDisplay();
+    if (lives <= 0) gameOver();
+}
+
+// Game Over Handling
+function gameOver() {
+    document.getElementById("game-interface").classList.add("hidden");
+    document.getElementById("game-over-screen").classList.remove("hidden");
+
+    const restartBtn = document.getElementById("restart-button");
+    restartBtn.disabled = false; // Always allow restart!//
+
+    const finalScore = currentStreak;
+    leaderboard = getLeaderboard();
+    // Always sort first so we compare correctly//
+     leaderboard.sort((a, b) => b.score - a.score);
+
+     let qualifies = false;
+
+     if (leaderboard.length < 5) {
+         qualifies = finalScore > 0;
+     } else {
+         const lowestScore = leaderboard.at(-1).score;
+         qualifies = finalScore > lowestScore;
+     }
+
+    document.getElementById("name-entry").classList.add("hidden");
+    document.getElementById("no-leaderboard-msg").classList.add("hidden");
+
+
+    if (qualifies) {
+        saveScoreButtonClicked = false;
+        document.getElementById("name-entry").classList.remove("hidden");
+        document.getElementById("player-name-input").value = playerName;
+
+        document.getElementById("save-score-btn").onclick = () => {
+            const name = document.getElementById("player-name-input").value.trim();
+            if (!name) return alert("Please enter a name.");
+
+            playerName = name;
+            saveLastPlayerName();
+
+            updateLeaderboard(playerName, finalScore);
+
+            if (finalScore > highScore) {
+                highScore = finalScore;
+                saveHighScore();
+            }
+
+            saveScoreButtonClicked = true;
+            restartBtn.disabled = false;
+
+            showLeaderboard();
+            updateScoreDisplay();
+            document.getElementById("name-entry").classList.add("hidden");
+
+            const prompt = document.getElementById("score-saved-prompt");
+            prompt.classList.add("show");
+            setTimeout(() => prompt.classList.remove("show"), 2000);
+        };
+
+    } else {
+        saveScoreButtonClicked = true;
+        document.getElementById("no-leaderboard-msg").classList.remove("hidden");
+    }
+}
+
+// Leaderboard Update
+function updateLeaderboard(name, scoreValue) {
+    leaderboard = getLeaderboard();
+
+    leaderboard.push({
+        name,
+        score: Number(scoreValue)
+    });
+
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, 5);
+    saveLeaderboard();
+}
+
+// Restart Game
+function restartGame() {
+    lives = 3;
+    score = { wins: 0, losses: 0, draws: 0 };
+    currentStreak = 0;
+    saveScoreButtonClicked = false;
+
+    // UI reset
+    document.getElementById("difficulty").disabled = false;
+    document.getElementById("game-over-screen").classList.add("hidden");
+    document.getElementById("game-interface").classList.remove("hidden");
+    
+    rebuildButtons();
+    updateScoreDisplay();
+    showLeaderboard();
+
+    document.getElementById("player-choice").textContent = "Player Choice: ";
+    document.getElementById("computer-choice").textContent = "Computer Choice: ";
+    document.getElementById("game-result").textContent = "Result: ";
+    document.getElementById("lives").textContent = "Lives Remaining: 3";
+
+    // Make sure buttons work again
+    document.querySelectorAll(".buttons button").forEach(btn => btn.disabled = false);
+}
+
+// DOM Loaded Setup
+document.addEventListener("DOMContentLoaded", () => {
+    const difficultyDropdown = document.getElementById("difficulty");
+    difficultyDropdown.value = difficulty;
+
+    const rulesDropdown = document.getElementById("rules-difficulty");
+    rulesDropdown.value = difficulty;
+
+    const toggleLeaderboardBtn = document.getElementById("toggle-leaderboard");
+    const leaderboardDiv = document.getElementById("leaderboard");
+
+    toggleLeaderboardBtn.onclick = () => {
+        const hidden = leaderboardDiv.classList.contains("hidden");
+        if (hidden) {
+            leaderboardDiv.classList.remove("hidden");
+            leaderboardDiv.classList.add("show");
+            showLeaderboard();
+            toggleLeaderboardBtn.textContent = "Hide Leaderboard";
+        } else {
+            leaderboardDiv.classList.add("hidden");
+            leaderboardDiv.classList.remove("show");
+            toggleLeaderboardBtn.textContent = "Show Leaderboard";
+        }
+    };
+
+    toggleLeaderboardBtn.textContent =
+        leaderboardDiv.classList.contains("hidden") ?
+        "Show Leaderboard" :
+        "Hide Leaderboard";
+
+    document.getElementById("restart-button").onclick = restartGame;
+
+    const rulesOverlay = document.getElementById('rules-overlay');
+    const showRulesBtn = document.getElementById('show-rules');
+    const closeRulesBtn = document.getElementById('close-rules');
+
+    showRulesBtn.addEventListener('click', () => {
+        rulesOverlay.classList.add('show');
+    });
+
+    closeRulesBtn.addEventListener('click', () => {
+        rulesOverlay.classList.remove('show');
+    });
+
+    rulesDropdown.onchange = () => {
+        showRules(rulesDropdown.value);
+    };
+});
+
+// Rules display
+function showRules(diff) {
+    const rulesList = document.getElementById("rules-list");
+    rulesList.innerHTML = "";
+    const img = document.createElement("img");
+
+    img.src = `images/${diff}.png`;
+    img.alt = `${capitalize(diff)} rules`;
+    img.style.width = "150px";
+    img.style.display = "block";
+    img.style.margin = "10px auto";
+
+    rulesList.appendChild(img);
 }
