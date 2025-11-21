@@ -1,4 +1,3 @@
-//21/11/2025//
 // Game State
 let lives = 3;
 let score = { wins: 0, losses: 0, draws: 0 };
