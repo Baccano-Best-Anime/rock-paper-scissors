@@ -1,117 +1,155 @@
-let lives = 3; // Fixed lives for all difficulties
-let difficulty = localStorage.getItem("difficulty") || "easy"; // Retrieve saved difficulty or default to "easy"
+let lives = 3;
+let difficulty = localStorage.getItem("difficulty") || "easy";
 
-// Function to set difficulty
-function setDifficulty() {
-    difficulty = document.getElementById("difficulty").value;
+const winningConditions = {  
 
-    // Save the selected difficulty to localStorage
-    localStorage.setItem("difficulty", difficulty);
+ 
 
-    // Update the lives display (lives remain constant)
-    document.getElementById("lives").textContent = "Lives Remaining: " + lives;
+    rock: ["fire", "scissors", "snake", "man", "woman", "wolf", "lizard", "tree", "sun", "axe", "monkey", "cockroach"],  
 
-    // Update the available buttons based on difficulty
-    const buttonsContainer = document.querySelector(".buttons");
-    buttonsContainer.innerHTML = `
-        <button onclick="playGame('rock')">Rock</button>
-        <button onclick="playGame('paper')">Paper</button>
-        <button onclick="playGame('scissors')">Scissors</button>
-    `;
+ 
 
-    if (difficulty === "medium") {
-        // Add Lizard and Spock buttons for medium difficulty
-        buttonsContainer.innerHTML += `
-            <button onclick="playGame('lizard')">Lizard</button>
-            <button onclick="playGame('spock')">Spock</button>
-        `;
-    } else if (difficulty === "hard") {
-        // Add all options for hard difficulty
-        const hardOptions = [
-            "fire", "snake", "human", "tree", "wolf", "lizard", "air", "spock",
-            "dragon", "devil", "lightning", "gun"
-        ];
-        hardOptions.forEach(option => {
-            buttonsContainer.innerHTML += `<button onclick="playGame('${option}')">${capitalize(option)}</button>`;
-        });
-    }
+    fire: ["scissors", "paper", "snake", "man", "woman", "tree", "wolf", "lizard", "axe", "monkey", "cockroach"],  
+
+ 
+
+    scissors: ["air", "tree", "paper", "snake", "man", "woman", "wolf", "lizard", "axe", "monkey", "cockroach", "moon"],  
+
+ 
+
+    snake: ["man", "woman", "wolf", "lizard", "tree", "paper", "air", "spock", "monkey", "cockroach", "moon", "bowl"],  
+
+ 
+
+    man: ["tree", "wolf", "lizard", "paper", "air", "spock", "dragon", "cockroach", "moon", "bowl", "alien", "devil"],  
+
+ 
+
+    woman: ["man", "tree", "cockroach", "wolf", "spock", "lizard", "paper", "moon", "air", "bowl", "alien", "dragon"],  
+
+ 
+
+    tree: ["wolf", "dragon", "lizard", "paper", "air", "spock", "devil", "cockroach", "moon", "bowl", "alien", "lightning"],  
+
+ 
+
+    wolf: ["lizard", "paper", "air", "spock", "dragon", "lightning", "devil", "moon", "bowl", "alien", "nuke", "dynamite"],  
+
+ 
+
+    lizard: ["paper", "moon", "air", "bowl", "spock", "alien", "devil", "dragon", "gun", "lightning", "nuke", "dynamite"],  
+
+ 
+
+    paper: ["air", "moon", "rock", "bowl", "spock", "alien", "devil", "dragon", "gun", "lightning", "nuke", "dynamite"],  
+
+ 
+
+    air: ["fire", "bowl", "rock", "alien", "spock", "sun", "devil", "gun", "dragon", "lightning", "nuke", "dynamite"],  
+
+ 
+
+    spock: ["devil", "alien", "dragon", "sun", "axe", "rock", "fire", "scissors", "gun", "lightning", "nuke", "dynamite"],  
+
+ 
+
+    dragon: ["devil", "lightning", "fire", "rock", "scissors", "gun", "snake", "sun", "axe", "monkey", "nuke", "dynamite"],  
+
+ 
+
+    devil: ["rock", "fire", "scissors", "gun", "lightning", "snake", "woman", "sun", "axe", "monkey", "nuke", "dynamite"],  
+
+ 
+
+    lightning: ["gun", "scissors", "rock", "sun", "axe", "monkey", "fire", "snake", "man", "woman", "nuke", "dynamite"],  
+
+ 
+
+    gun: ["rock", "tree", "fire", "sun", "axe", "monkey", "scissors", "snake", "man", "woman", "cockroach", "wolf"],  
+
+ 
+
+    dynam: ["gun", "rock", "sun", "fire", "scissors", "axe", "snake", "monkey", "woman", "man", "tree", "cockroach"],  
+
+ 
+
+    nuk: ["dynamite", "gun", "rock", "sun", "fire", "scissors", "snake", "axe", "monkey", "woman", "man", "tree"],  
+
+ 
+
+    alien: ["dragon", "devil", "lightning", "nuke", "dynamite", "gun", "rock", "sun", "fire", "scissors", "axe", "snake"],  
+
+ 
+
+    bowl: ["water", "alien", "dragon", "devil", "lightning", "nuke", "dynamite", "gun", "rock", "sun", "fire", "scissors"],  
+
+ 
+
+    moon: ["air", "bowl", "water", "alien", "dragon", "devil", "lightning", "nuke", "dynamite", "gun", "rock", "sun"],  
+
+ 
+
+    sun: ["fire", "scissors", "axe", "snake", "monkey", "woman", "man", "tree", "cockroach", "wolf", "lizard", "paper"]  
+
+}; 
+
+// Function to start the game
+function startGame() {
+    document.getElementById("start-screen").style.display = "none";
+    document.getElementById("game-interface").style.display = "block";
+    setDifficulty(); // Initialize the game with the selected difficulty
 }
 
-// Function to play the game
+function setDifficulty() {
+    difficulty = document.getElementById("difficulty").value;
+    localStorage.setItem("difficulty", difficulty);
+    document.getElementById("lives").textContent = `Lives Remaining: ${lives}`;
+    const buttonsContainer = document.querySelector(".buttons");
+    buttonsContainer.innerHTML = "";
+
+    const options = getOptionsForDifficulty(difficulty);
+    options.forEach(option => {
+        buttonsContainer.innerHTML += `<button onclick="playGame('${option}')">${capitalize(option)}</button>`;
+    });
+}
+
+function getOptionsForDifficulty(difficulty) {
+    const options = {
+        easy: ["rock", "paper", "scissors"],
+        medium: ["rock", "paper", "scissors", "lizard", "spock"],
+        hard: ["rock", "fire", "scissors", "snake", "man", "woman", "tree", "wolf", "lizard", "paper", "air", "spock", "dragon", "devil", "lightning", "gun"],
+        impossible: ["rock", "fire", "scissors", "snake", "man", "woman", "tree", "wolf", "lizard", "paper", "air", "spock", "dragon", "devil", "lightning", "gun", "dynamite", "nuke", "alien", "bowl", "moon", "cockroach", "monkey", "axe", "sun"]
+    };
+    return options[difficulty];
+}
+
 function playGame(playerChoice) {
-    if (lives <= 0) {
-        return; // Prevent further gameplay if lives are 0
-    }
+    if (lives <= 0) return;
 
-    let choices = ["rock", "paper", "scissors"]; // Default choices
-    if (difficulty === "medium") {
-        choices = ["rock", "paper", "scissors", "lizard", "spock"]; // Add lizard and spock for medium
-    } else if (difficulty === "hard") {
-        choices = [
-            "rock", "fire", "scissors", "snake", "human", "tree", "wolf", "lizard",
-            "paper", "air", "spock", "dragon", "devil", "lightning", "gun"
-        ]; // Add all options for hard
-    }
-
-    const computerChoice = choices[Math.floor(Math.random() * choices.length)]; // Random choice
-
+    const choices = getOptionsForDifficulty(difficulty);
+    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
     let result;
+
     if (playerChoice === computerChoice) {
         result = "It's a draw!";
-    } else if (isPlayerWinner(playerChoice, computerChoice)) {
+    } else if (winningConditions[playerChoice]?.includes(computerChoice)) {
         result = "You win!";
     } else {
         result = "You lose!";
-        lives--; // Decrease lives if the player loses
+        lives--;
     }
 
-    // Update the results and lives display
-    document.getElementById("player-choice").textContent = "Player Choice: " + playerChoice;
-    document.getElementById("computer-choice").textContent = "Computer Choice: " + computerChoice;
-    document.getElementById("game-result").textContent = "Result: " + result;
-    document.getElementById("lives").textContent = "Lives Remaining: " + lives;
+    document.getElementById("player-choice").textContent = `Player Choice: ${playerChoice}`;
+    document.getElementById("computer-choice").textContent = `Computer Choice: ${computerChoice}`;
+    document.getElementById("game-result").textContent = `Result: ${result}`;
+    document.getElementById("lives").textContent = `Lives Remaining: ${lives}`;
 
-    // Check if lives are 0
-    if (lives === 0) {
-        showGameOverScreen(); // Trigger the Game Over screen
-    }
-}
-
-// Function to determine if the player wins
-function isPlayerWinner(playerChoice, computerChoice) {
-    const winningConditions = {
-        rock: ["fire", "scissors", "snake", "human", "wolf", "lizard", "tree"],
-        fire: ["scissors", "paper", "snake", "human", "tree", "wolf", "lizard"],
-        scissors: ["air", "tree", "paper", "snake", "human", "wolf", "lizard"],
-        snake: ["human", "wolf", "lizard", "tree", "paper", "air", "spock"],
-        human: ["tree", "wolf", "lizard", "paper", "air", "spock", "dragon"],
-        tree: ["wolf", "dragon", "lizard", "paper", "air", "spock", "devil"],
-        wolf: ["lizard", "paper", "air", "spock", "dragon", "lightning", "devil"],
-        lizard: ["paper", "air", "spock", "devil", "dragon", "gun", "lightning"],
-        paper: ["air", "rock", "spock", "devil", "dragon", "gun", "lightning"],
-        air: ["fire", "rock", "spock", "devil", "gun", "dragon", "lightning"],
-        spock: ["devil", "dragon", "rock", "fire", "scissors", "gun", "lightning"],
-        dragon: ["devil", "lightning", "fire", "rock", "scissors", "gun", "snake"],
-        devil: ["rock", "fire", "scissors", "gun", "snake", "human"],
-        lightning: ["gun", "scissors", "rock", "tree", "fire", "snake", "human"],
-        gun: ["rock", "tree", "scissors", "snake", "human", "wolf"]
-    };
-
-    return winningConditions[playerChoice]?.includes(computerChoice);
-}
-
-// Utility function to capitalize the first letter of a string
-function capitalize(word) {
-    return word.charAt(0).toUpperCase() + word.slice(1);
+    if (lives === 0) showGameOverScreen();
 }
 
 function showGameOverScreen() {
-    // Add the "game-over" class to the body
     document.body.classList.add("game-over");
-
-    // Replace the game interface with a "Game Over" screen
-    const gameContainer = document.body;
-    gameContainer.innerHTML = `
+    document.body.innerHTML = `
         <h1>Game Over</h1>
         <p>You have no lives left!</p>
         <button onclick="restartGame()">Restart Game</button>
@@ -119,13 +157,15 @@ function showGameOverScreen() {
 }
 
 function restartGame() {
-    // Reset lives and reload the page to restart the game
     lives = 3;
     location.reload();
 }
 
-// Set the initial difficulty and buttons when the page loads
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("difficulty").value = difficulty; // Set the dropdown to the saved difficulty
-    setDifficulty(); // Update the buttons based on the saved difficulty
+    document.getElementById("difficulty").value = difficulty;
 });
+

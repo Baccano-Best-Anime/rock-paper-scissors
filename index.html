@@ -9,25 +9,31 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>Rock Paper Scissors</h1>
-    <div id="difficulty-selector">
-        <label for="difficulty">Select Difficulty:</label>
-        <select id="difficulty" onchange="setDifficulty()">
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-        </select>
+    <!-- Start Screen -->
+    <div id="start-screen">
+        <h1>Welcome to Rock Paper Scissors</h1>
+        <button onclick="startGame()">Start Game</button>
     </div>
-    <div class="buttons">
-        <button onclick="playGame('rock')">Rock</button>
-        <button onclick="playGame('paper')">Paper</button>
-        <button onclick="playGame('scissors')">Scissors</button>
-    </div>
-    <div id="results">
-        <p id="player-choice">Player Choice: </p>
-        <p id="computer-choice">Computer Choice: </p>
-        <p id="game-result">Result: </p>
-        <p id="lives">Lives Remaining: 3</p> <!-- New lives display -->
+
+    <!-- Game Interface -->
+    <div id="game-interface" style="display: none;">
+        <h1>Rock Paper Scissors</h1>
+        <div id="difficulty-selector">
+            <label for="difficulty">Select Difficulty:</label>
+            <select id="difficulty" onchange="setDifficulty()">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="impossible">Impossible</option>
+            </select>
+        </div>
+        <div class="buttons"></div>
+        <div id="results">
+            <p id="player-choice">Player Choice: </p>
+            <p id="computer-choice">Computer Choice: </p>
+            <p id="game-result">Result: </p>
+            <p id="lives">Lives Remaining: 3</p>
+        </div>
     </div>
 </body>
 </html>
